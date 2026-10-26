@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Air Cargo AI Assistant | Schedule & Rate Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,40 +15,40 @@
     <header class="app-header">
       <div class="header-left">
         <div class="logo-badge">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
           </svg>
         </div>
         <div>
           <h1>CargoAI Assistant</h1>
-          <p class="subtitle">Air Cargo Schedule & Rate Conversational Intelligence Engine</p>
+          <p class="subtitle">Air Cargo Schedule & Rate Engine</p>
         </div>
       </div>
       <div class="header-right">
         <div class="system-status">
           <span class="status-dot"></span>
-          <span>Mock CargoAI Service: Active</span>
+          <span class="status-label">Online</span>
         </div>
         <button id="reset-btn" class="btn btn-outline" title="Reset Session State">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
             <path d="M3 3v5h5"/>
           </svg>
-          Reset Search
+          <span class="btn-text">Reset</span>
         </button>
       </div>
     </header>
 
-    <!-- Main 3-Column Workspace -->
+    <!-- Main Workspace -->
     <main class="main-layout">
       <!-- Left Panel: 32 Scenarios Interactive Showcase -->
-      <section class="panel scenarios-panel">
+      <section class="panel scenarios-panel" id="panel-scenarios">
         <div class="panel-header">
           <div class="title-with-badge">
             <h2>32 Test Scenarios</h2>
             <span class="badge badge-accent">Spec Runner</span>
           </div>
-          <p class="panel-caption">Select any scenario to test conversational rulebook compliance in 1 click.</p>
+          <p class="panel-caption">Select any scenario to test rulebook compliance in 1 click.</p>
         </div>
 
         <!-- Scenario Category Navigation -->
@@ -68,7 +68,7 @@
       </section>
 
       <!-- Center Panel: Interactive Chat Stream -->
-      <section class="panel chat-panel">
+      <section class="panel chat-panel mobile-active" id="panel-chat">
         <div class="panel-header chat-header">
           <div class="chat-title-info">
             <h2>Chat Stream</h2>
@@ -108,8 +108,8 @@
 
         <!-- Input Area -->
         <form id="chat-form" class="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Type a message (e.g., 'MAA to FRA next Friday' or 'Only Lufthansa')..." autocomplete="off">
-          <button type="submit" id="send-btn" class="btn btn-primary">
+          <input type="text" id="chat-input" placeholder="Type a message or select a scenario..." autocomplete="off">
+          <button type="submit" id="send-btn" class="btn btn-primary" aria-label="Send message">
             <span>Send</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
@@ -119,7 +119,7 @@
       </section>
 
       <!-- Right Panel: Live Flights & State Inspector -->
-      <section class="panel results-panel">
+      <section class="panel results-panel" id="panel-results">
         <div class="panel-header">
           <div class="results-header-row">
             <h2>Flight Results</h2>
@@ -138,7 +138,7 @@
           <div id="empty-results" class="empty-state">
             <div class="empty-icon">📦</div>
             <h3>No Active Flight Results</h3>
-            <p>Send a schedule or rate query or click any of the 32 scenarios to view flight options.</p>
+            <p>Send a schedule or rate query or pick a scenario to view flight options.</p>
           </div>
           <div id="flight-cards-container" class="cards-stream"></div>
         </div>
@@ -188,6 +188,22 @@
         </div>
       </section>
     </main>
+
+    <!-- Mobile Navigation Bottom Bar (visible on screens <= 1024px) -->
+    <nav class="mobile-nav-bar" id="mobile-nav">
+      <button class="mobile-nav-btn" data-target="panel-scenarios">
+        <span class="m-icon">📋</span>
+        <span class="m-label">Scenarios</span>
+      </button>
+      <button class="mobile-nav-btn active" data-target="panel-chat">
+        <span class="m-icon">💬</span>
+        <span class="m-label">Chat</span>
+      </button>
+      <button class="mobile-nav-btn" data-target="panel-results">
+        <span class="m-icon">✈️</span>
+        <span class="m-label">Flights (<span id="mobile-flights-badge">0</span>)</span>
+      </button>
+    </nav>
   </div>
 
   <script src="/static/app.js"></script>

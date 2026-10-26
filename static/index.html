@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Cargo AI Assistant | Schedule & Rate Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>CargoAI Assistant</h1>
+          <p class="subtitle">Air Cargo Schedule & Rate Conversational Intelligence Engine</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="system-status">
+          <span class="status-dot"></span>
+          <span>Mock CargoAI Service: Active</span>
+        </div>
+        <button id="reset-btn" class="btn btn-outline" title="Reset Session State">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Reset Search
+        </button>
+      </div>
+    </header>
+
+    <!-- Main 3-Column Workspace -->
+    <main class="main-layout">
+      <!-- Left Panel: 32 Scenarios Interactive Showcase -->
+      <section class="panel scenarios-panel">
+        <div class="panel-header">
+          <div class="title-with-badge">
+            <h2>32 Test Scenarios</h2>
+            <span class="badge badge-accent">Spec Runner</span>
+          </div>
+          <p class="panel-caption">Select any scenario to test conversational rulebook compliance in 1 click.</p>
+        </div>
+
+        <!-- Scenario Category Navigation -->
+        <div class="category-tabs" id="category-tabs">
+          <button class="tab-btn active" data-category="All">All (32)</button>
+          <button class="tab-btn" data-category="Schedule Search">Schedules</button>
+          <button class="tab-btn" data-category="Rate Search">Rates</button>
+          <button class="tab-btn" data-category="Refinement & Filters">Filters</button>
+          <button class="tab-btn" data-category="Search Context Updates">Updates</button>
+          <button class="tab-btn" data-category="Edge Cases & Errors">Edge Cases</button>
+        </div>
+
+        <!-- Scenarios List -->
+        <div class="scenarios-list" id="scenarios-list">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- Center Panel: Interactive Chat Stream -->
+      <section class="panel chat-panel">
+        <div class="panel-header chat-header">
+          <div class="chat-title-info">
+            <h2>Chat Stream</h2>
+            <span id="active-session-id" class="badge badge-subtle">session: default_user</span>
+          </div>
+          <div id="rule-badge" class="rule-indicator">
+            <span class="rule-icon">⚖️</span>
+            <span id="rule-text">9 Rules Active</span>
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div class="chat-messages" id="chat-messages">
+          <div class="message-bubble bot-message">
+            <div class="avatar">✈️</div>
+            <div class="bubble-content">
+              <p><strong>Hello! I am your Air Cargo Assistant.</strong></p>
+              <p>I can help you search flight schedules or bookable air cargo rates across major airlines.</p>
+              <div class="starter-examples">
+                <span class="example-chip" onclick="sendPrompt('Show flights from Chennai to Frankfurt on Sep 22.')">✈️ MAA to FRA Sep 22 (Schedule)</span>
+                <span class="example-chip" onclick="sendPrompt('Best rate MAA to FRA Sep 22, 850 kg, 6 pallets, 6.5 CBM.')">💰 Rate: 850 kg, 6 pallets</span>
+                <span class="example-chip" onclick="sendPrompt('Only show direct flights.')">⚡ Direct Flights Only</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Filters Strip -->
+        <div class="quick-filters">
+          <button class="quick-chip" onclick="sendPrompt('Only show direct flights.')">Direct Only</button>
+          <button class="quick-chip" onclick="sendPrompt('Only show Lufthansa options.')">Lufthansa</button>
+          <button class="quick-chip" onclick="sendPrompt('Show freighter aircraft only.')">Freighters</button>
+          <button class="quick-chip" onclick="sendPrompt('Show the lower-emission options first.')">Lower CO2</button>
+          <button class="quick-chip" onclick="sendPrompt('Only show live rates.')">Live Rates</button>
+          <button class="quick-chip" onclick="sendPrompt('Show all')">Show All</button>
+        </div>
+
+        <!-- Input Area -->
+        <form id="chat-form" class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Type a message (e.g., 'MAA to FRA next Friday' or 'Only Lufthansa')..." autocomplete="off">
+          <button type="submit" id="send-btn" class="btn btn-primary">
+            <span>Send</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Panel: Live Flights & State Inspector -->
+      <section class="panel results-panel">
+        <div class="panel-header">
+          <div class="results-header-row">
+            <h2>Flight Results</h2>
+            <div id="action-mode-badge" class="mode-badge badge-idle">Ready</div>
+          </div>
+          <!-- Tabs for Flights vs State Inspector vs Cleaning Report -->
+          <div class="view-tabs">
+            <button class="view-tab active" data-view="flights-view">Flights (<span id="flights-count">0</span>)</button>
+            <button class="view-tab" data-view="state-view">Session State</button>
+            <button class="view-tab" data-view="cleaning-view">Cleaning Report</button>
+          </div>
+        </div>
+
+        <!-- View 1: Flights List -->
+        <div id="flights-view" class="view-content active">
+          <div id="empty-results" class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>No Active Flight Results</h3>
+            <p>Send a schedule or rate query or click any of the 32 scenarios to view flight options.</p>
+          </div>
+          <div id="flight-cards-container" class="cards-stream"></div>
+        </div>
+
+        <!-- View 2: Search State Inspector -->
+        <div id="state-view" class="view-content">
+          <div class="state-card">
+            <h3>Active Search Parameters</h3>
+            <table class="state-table" id="state-table">
+              <tbody>
+                <tr><td>Intent</td><td id="st-intent">-</td></tr>
+                <tr><td>Origin</td><td id="st-origin">-</td></tr>
+                <tr><td>Destination</td><td id="st-dest">-</td></tr>
+                <tr><td>Date</td><td id="st-date">-</td></tr>
+                <tr><td>Weight (Gross)</td><td id="st-weight">-</td></tr>
+                <tr><td>Pieces / Pkg</td><td id="st-pieces">-</td></tr>
+                <tr><td>Volume (CBM)</td><td id="st-volume">-</td></tr>
+                <tr><td>Dimensions (cm)</td><td id="st-dims">-</td></tr>
+                <tr class="highlight-row"><td>Chargeable Weight</td><td id="st-chgweight">-</td></tr>
+                <tr><td>Active Sort</td><td id="st-sort">-</td></tr>
+                <tr><td>Pending Field</td><td id="st-pending">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="state-card">
+            <h3>Active Conversation Filters (Rule 6)</h3>
+            <div id="active-filters-badges" class="filter-badges-group">
+              <span class="badge badge-subtle">No filters active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 3: Data Cleaning Report -->
+        <div id="cleaning-view" class="view-content">
+          <div class="state-card">
+            <h3>CargoAI Data Cleaning Pipeline</h3>
+            <p class="caption">Normalizes raw API responses, formats currencies, deduplicates records, and prunes invalid times.</p>
+            <div class="stats-grid" id="cleaning-stats">
+              <div class="stat-box"><span class="stat-num" id="cl-in">0</span><span class="stat-label">Rows In</span></div>
+              <div class="stat-box"><span class="stat-num" id="cl-out">0</span><span class="stat-label">Rows Out</span></div>
+              <div class="stat-box"><span class="stat-num" id="cl-airline">0</span><span class="stat-label">Airlines Fixed</span></div>
+              <div class="stat-box"><span class="stat-num" id="cl-dup">0</span><span class="stat-label">Deduplicated</span></div>
+              <div class="stat-box"><span class="stat-num" id="cl-price">0</span><span class="stat-label">Price Converted</span></div>
+              <div class="stat-box"><span class="stat-num" id="cl-rateless">0</span><span class="stat-label">Rateless Removed</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

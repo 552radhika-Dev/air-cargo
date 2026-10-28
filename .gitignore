@@ -13,3 +13,5 @@ venv/
 .vscode/
 sheet_dump.json
 scenarios_parsed.txt
+cloudflared.exe
+*.exe
